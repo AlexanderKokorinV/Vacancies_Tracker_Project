@@ -71,7 +71,13 @@ class DBManager:
 
         avg_salary = self.get_avg_salary()
 
-        query = "SELECT AVG((COALESCE(salary_from, salary_to) + COALESCE(salary_to, salary_from)) / 2) FROM vacancies"
+        query = """
+        SELECT e.name, v.title, v.salary_from, v.salary_to, v.url
+        FROM vacancies v
+        JOIN employers e ON v.employer_id = e.employer_id
+        WHERE (COALESCE(v.salary_from, v.salary_to) + COALESCE(v.salary_to, v.salary_from)) / 2 > %s
+        ORDER BY v.salary_from DESC;
+    """
 
         conn = psycopg2.connect(dbname=self.db_name, **self.params)
         with conn.cursor() as cur:

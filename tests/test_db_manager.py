@@ -19,3 +19,22 @@ def test_get_vacancies_with_keyword(db_setup, manager):
     result = manager.get_vacancies_with_keyword("Python")
     assert len(result) == 1
     assert "Python Dev" in result[0][1]
+
+
+def test_get_all_vacancies(manager, db_setup):
+    """Тест получения полного списка вакансий с названиями компаний"""
+    # 1. Вызываем метод
+    result = manager.get_all_vacancies()
+
+    # 2. Проверяем структуру результата
+    assert isinstance(result, list)  # Должен быть список
+    assert len(result) >= 1  # В базе есть как минимум 1 тестовая запись
+
+    # 3. Проверяем содержимое первой записи (кортежа)
+    first_vac = result[0]
+
+    # Ожидаемый порядок полей: (Name, Title, Salary_From, Salary_To, URL)
+    assert first_vac[0] == "Test Company"  # Название компании из таблицы employers
+    assert first_vac[1] == "Python Dev"  # Название вакансии из таблицы vacancies
+    assert first_vac[2] == 100  # salary_from
+    assert first_vac[3] == 200  # salary_to
