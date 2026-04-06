@@ -1,9 +1,10 @@
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 from src.hh_api import HHParser
 
 
 @patch("requests.get")
-def test_hh_get_employers_success(mock_get: MagicMock):
+def test_hh_get_employers_success(mock_get: MagicMock) -> None:
     """Тест успешного поиска работодателя"""
     parser = HHParser()
 
@@ -22,7 +23,7 @@ def test_hh_get_employers_success(mock_get: MagicMock):
 
 
 @patch("requests.get")
-def test_hh_get_vacancies_empty(mock_get: MagicMock):
+def test_hh_get_vacancies_empty(mock_get: MagicMock) -> None:
     """Тест случая, когда у компании нет открытых вакансий"""
     parser = HHParser()
 

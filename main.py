@@ -1,25 +1,38 @@
 import os
-from src.utils import *
+
+from dotenv import load_dotenv
+
 from src.db_manager import DBManager
 from src.hh_api import HHParser
-from dotenv import load_dotenv
+from src.utils import create_database, save_to_db
+
 load_dotenv()
 
 db_params = {
-        "user": os.getenv("DB_USER"),
-        "password": os.getenv("DB_PASSWORD"),
-        "host": os.getenv("DB_HOST"),
-        "port": os.getenv("DB_PORT")
-    }
+    "user": os.getenv("DB_USER"),
+    "password": os.getenv("DB_PASSWORD"),
+    "host": os.getenv("DB_HOST"),
+    "port": os.getenv("DB_PORT"),
+}
 db_name = "hh_ru_db"
 
 
-
-def main():
+def main() -> None:
     """Консольное меню для взаимодействия с пользователем"""
 
     # Список из 10 интересующих компаний
-    companies = ["Yandex", "Ozon", "VK", "Softline", "Rostelecom", "Kaspersky", "Astra", "Aviasales", "Selectel", "Naumen"]
+    companies = [
+        "Yandex",
+        "Ozon",
+        "VK",
+        "Softline",
+        "Rostelecom",
+        "Kaspersky",
+        "Astra",
+        "Aviasales",
+        "Selectel",
+        "Naumen",
+    ]
 
     # 1. Перезаписываем данные в БД при запуске скрипта
     print("Обновление данных из hh.ru... Пожалуйста, подождите.")
@@ -89,9 +102,5 @@ def main():
             print("Ошибка: введите число от 0 до 5.")
 
 
-
 if __name__ == "__main__":
     main()
-
-
-

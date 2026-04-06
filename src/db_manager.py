@@ -1,18 +1,15 @@
 import psycopg2
-from src.utils import *
-
-
 
 
 class DBManager:
     """Класс для работы с данными в БД PostgreSQL"""
 
-    def __init__(self, db_name, params):
+    def __init__(self, db_name: str, params: dict) -> None:
         """Конструктор для класса DBManager"""
         self.db_name = db_name
         self.params = params
 
-    def get_companies_and_vacancies_count(self):
+    def get_companies_and_vacancies_count(self) -> list[tuple]:
         """Получает список всех компаний и количество вакансий у каждой компании"""
         query = """
             SELECT e.name, COUNT(v.vacancy_id) as vacancies_count
@@ -28,9 +25,13 @@ class DBManager:
             result = cur.fetchall()
 
         conn.close()
-        return result
 
-    def get_all_vacancies(self):
+        # Проверка для mypy: убеждаемся, что fetchall() вернул список
+        if isinstance(result, list):
+            return result
+        return []
+
+    def get_all_vacancies(self) -> list[tuple]:
         """Получает список всех вакансий с указанием названия компании,
         названия вакансии и зарплаты и ссылки на вакансию"""
         query = """
@@ -46,9 +47,13 @@ class DBManager:
             result = cur.fetchall()
 
         conn.close()
-        return result
 
-    def get_avg_salary(self):
+        # Проверка для mypy: убеждаемся, что fetchall() вернул список
+        if isinstance(result, list):
+            return result
+        return []
+
+    def get_avg_salary(self) -> int:
         """Получает среднюю зарплату по вакансиям"""
         # Считаем среднее между ОТ и ДО для каждой вакансии, а затем общее среднее по всей таблице
         query = """SELECT AVG((COALESCE(salary_from, salary_to) + COALESCE(salary_to, salary_from)) / 2) 
@@ -66,7 +71,7 @@ class DBManager:
 
         return 0
 
-    def get_vacancies_with_higher_salary(self):
+    def get_vacancies_with_higher_salary(self) -> list[tuple]:
         """Получает список вакансий с зарплатой выше средней по всем вакансиям"""
 
         avg_salary = self.get_avg_salary()
@@ -85,9 +90,13 @@ class DBManager:
             result = cur.fetchall()
 
         conn.close()
-        return result
 
-    def get_vacancies_with_keyword(self, keyword):
+        # Проверка для mypy: убеждаемся, что fetchall() вернул список
+        if isinstance(result, list):
+            return result
+        return []
+
+    def get_vacancies_with_keyword(self, keyword: str) -> list[tuple]:
         """Получает список всех вакансий, в названии которых содержится ключевое слово"""
         query = """
                     SELECT e.name, v.title, v.salary_from, v.salary_to, v.url
@@ -105,4 +114,8 @@ class DBManager:
             result = cur.fetchall()
 
         conn.close()
-        return result
+
+        # Проверка для mypy: убеждаемся, что fetchall() вернул список
+        if isinstance(result, list):
+            return result
+        return []

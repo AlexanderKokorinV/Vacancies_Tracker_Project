@@ -1,29 +1,29 @@
-import requests
 import time
+from typing import Any
 
+import requests
 
 
 class HHParser:
     """Класс для работы с API hh.ru"""
-    def __init__(self):
+
+    def __init__(self) -> None:
         """Конструктор для класса HHParser"""
         self.base_url = "https://api.hh.ru"
         self.headers = {"User-Agent": "hh_api_db/1.0"}
 
-    def get_employers(self, employer_names: list[str]):
+    def get_employers(self, employer_names: list[str]) -> list[dict]:
         """Данные о работодателях"""
         employers_data = []
         for name in employer_names:
-            params = {
+            params: dict[str, Any] = {
                 "text": name,
                 "only_with_vacancies": True,
                 "type": "company",
                 "area": 113,
             }
 
-            response = requests.get(
-                f"{self.base_url}/employers", params=params, headers=self.headers
-            )
+            response = requests.get(f"{self.base_url}/employers", params=params, headers=self.headers)
 
             if response.status_code == 200:
                 items = response.json().get("items")
@@ -34,22 +34,19 @@ class HHParser:
 
         return employers_data
 
-
-    def get_vacancies(self, employer_id: str):
+    def get_vacancies(self, employer_id: str) -> list[dict]:
         """Получение вакансий конкретного работодателя"""
-        params = {
-            "employer_id": employer_id,
-            "per_page": 10,
-            "only_with_salary": True
-        }
+        params: dict[str, Any] = {"employer_id": employer_id, "per_page": 10, "only_with_salary": True}
 
-        response = requests.get(
-            f"{self.base_url}/vacancies", params=params, headers=self.headers
-        )
+        response = requests.get(f"{self.base_url}/vacancies", params=params, headers=self.headers)
 
         if response.status_code == 200:
-            return response.json().get("items", [])
+            # Извлекаем данные
+            data = response.json()
+            items = data.get("items")
+
+            # Проверяем, что items — это действительно список, чтобы успокоить mypy
+            if isinstance(items, list):
+                return items
+
         return []
-
-
-
